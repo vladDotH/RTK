@@ -18,19 +18,23 @@ class Esp:
         self.port.write(bytes([mode.DIGITAL, pin, val]))
 
     def analogWrite(self, pin, val):
-        self.port.write(bytes([mode.PWM, pin, val]))
+        self.port.write(bytes([mode.PWM, pin, int(val)]))
 
     def servo_move(self, servo, val):
-        self.port.write(bytes([mode.SERVO, servo, val]))
+        self.port.write(bytes([mode.SERVO, servo, int(val)]))
 
     def close(self):
         self.port.close()
 
     def __init__(self, portName):
-        self.port = Serial(portName, baudrate=9600,
-                           stopbits=serial.STOPBITS_ONE,
-                           parity=serial.PARITY_NONE,
-                           bytesize=serial.EIGHTBITS)
+        try:
+            self.port = Serial(portName, baudrate=9600,
+                               stopbits=serial.STOPBITS_ONE,
+                               parity=serial.PARITY_NONE,
+                               bytesize=serial.EIGHTBITS)
+
+        except serial.SerialException:
+            print("Could not connect to port " + portName)
 
         time.sleep(2)
 
